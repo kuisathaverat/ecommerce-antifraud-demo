@@ -15,24 +15,30 @@ pipeline {
         }
         stage('Build') {
             environment {
-                DOCKER_HOST = '/shared/docker.sock'
+                PATH = '/usr/local/bin:/usr/bin:/bin:/home/jenkins/agent'
             }
             steps {
-                withCredentials([string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN')]) {
-                    // withCredentials([
-                    //     usernamePassword(
-                    //         credentialsId: 'docker.io',
-                    //         passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
-                    //         usernameVariable: 'CONTAINER_REGISTRY_USERNAME')]) {
-                        sh (
-                        label: 'mvn deploy spring-boot:build-image',
-                        script: '''
-                            echo DOCKER_HOST=${DOCKER_HOST}
-                            export OTEL_TRACES_EXPORTER="otlp" 
-                            #./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST}
-                            ./mvnw -V -B spring-boot:build-image -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST} || sleep 3600
-                        ''')
-                    // }
+                /*
+                conatner(name: 'dind'){
+                    sh(label: 'prepare DinD', script: '''
+                        docker info
+                        cp $(which docker) /home/jenkins/agent/
+                    ''')
+                }*/
+                withCredentials([
+                    string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
+                    usernamePassword(credentialsId: 'docker.io',
+                        passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
+                        usernameVariable: 'CONTAINER_REGISTRY_USERNAME')]
+                    ) {
+                        sh (label: 'mvn deploy spring-boot:build-image',
+                            script: '''
+                                echo DOCKER_HOST=${DOCKER_HOST}
+                                export OTEL_TRACES_EXPORTER="otlp" 
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST}
+                                #./mvnw -V -B spring-boot:build-image -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST} || sleep 3600
+                            ''')
+                    }
                 }
 				/*
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
