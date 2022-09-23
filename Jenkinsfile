@@ -26,7 +26,11 @@ pipeline {
                     //         usernameVariable: 'CONTAINER_REGISTRY_USERNAME')]) {
                         sh (
                         label: 'mvn deploy spring-boot:build-image',
-                        script: 'export OTEL_TRACES_EXPORTER="otlp" && ./mvnw -V -B deploy -Dmaven.deploy.skip')
+                        script: '''
+                            echo DOCKER_HOST=${DOCKER_HOST}
+                            export OTEL_TRACES_EXPORTER="otlp" 
+                            ./mvnw -V -B deploy -Dmaven.deploy.skip
+                        ''')
                     // }
                 }
 				/*
