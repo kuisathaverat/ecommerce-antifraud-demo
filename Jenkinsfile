@@ -29,7 +29,8 @@ pipeline {
                         script: '''
                             echo DOCKER_HOST=${DOCKER_HOST}
                             export OTEL_TRACES_EXPORTER="otlp" 
-                            ./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST}
+                            #./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST}
+                            ./mvnw -V -B spring-boot:build-image -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST} || sleep 3600
                         ''')
                     // }
                 }
