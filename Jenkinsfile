@@ -14,6 +14,9 @@ pipeline {
             }
         }
         stage('Build') {
+            environment {
+                PUBLISH_DOCKER = 'true'
+            }
             steps {
                 withCredentials([
                     string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
@@ -24,7 +27,7 @@ pipeline {
                         sh (label: 'mvn deploy spring-boot:build-image',
                             script: '''
                                 export OTEL_TRACES_EXPORTER="otlp" 
-                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.publishRegistry=docker.io -Dspring-boot.build-image.publish=true
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip
                             ''')
                    }
 				/*

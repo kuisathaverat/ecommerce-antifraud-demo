@@ -106,7 +106,14 @@
                             <BPE_OTEL_LOGS_EXPORTER>otlp</BPE_OTEL_LOGS_EXPORTER>
                         </env>
                     </image>
-                    <publish>false</publish>
+                    <publish>${env.PUBLISH_DOCKER}</publish>
+                    <docker>
+                        <publishRegistry>
+                            <username>${env.CONTAINER_REGISTRY_USERNAME}</username>
+                            <password>${env.CONTAINER_REGISTRY_PASSWORD}</password>
+                            <url>https://docker.io</url>
+                        </publishRegistry>
+                    </docker>
                 </configuration>
             </plugin>
             <plugin>
