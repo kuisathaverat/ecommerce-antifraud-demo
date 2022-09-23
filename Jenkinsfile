@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'linux' }
+    agent { label 'maven' }
     options {
         disableConcurrentBuilds()
         quietPeriod(1)
@@ -14,25 +14,20 @@ pipeline {
             }
         }
         stage('Build') {
-            agent {
-                node {
-                    label 'linux'
-                    customWorkspace "${VERSION}"
-                }
+            environment {
+                DOCKER_HOST = '/shared/docker.sock'
             }
             steps {
                 withCredentials([string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN')]) {
-                    withCredentials([
-                        usernamePassword(
-                            credentialsId: 'docker.io',
-                            passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
-                            usernameVariable: 'CONTAINER_REGISTRY_USERNAME')]) {
+                    // withCredentials([
+                    //     usernamePassword(
+                    //         credentialsId: 'docker.io',
+                    //         passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
+                    //         usernameVariable: 'CONTAINER_REGISTRY_USERNAME')]) {
                         sh (
                         label: 'mvn deploy spring-boot:build-image',
                         script: 'export OTEL_TRACES_EXPORTER="otlp" && ./mvnw -V -B deploy -Dmaven.deploy.skip')
-                        // security disclosure
-                        //sh(label: 'security issue', script: 'echo "${CONTAINER_REGISTRY_PASSWORD}" > file.txt')
-                    }
+                    // }
                 }
 				/*
                 withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {

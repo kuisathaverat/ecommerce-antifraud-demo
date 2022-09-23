@@ -88,7 +88,7 @@
                 </executions>
                 <configuration>
                     <image>
-                        <name>docker.io/v1v1v/${project.artifactId}:${project.version}</name>
+                        <name>docker.io/kuisathaverat/${project.artifactId}:${project.version}</name>
                         <env>
                             <!-- https://docs.spring.io/spring-boot/docs/3.0.x/maven-plugin/reference/htmlsingle/#build-image.examples.runtime-jvm-configuration -->
                             <!-- https://paketo.io/docs/howto/java/ -->
