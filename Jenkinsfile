@@ -24,8 +24,7 @@ pipeline {
                         sh (label: 'mvn deploy spring-boot:build-image',
                             script: '''
                                 export OTEL_TRACES_EXPORTER="otlp" 
-                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST}
-                                #./mvnw -V -B spring-boot:build-image -Dmaven.deploy.skip -Ddocker.host=${DOCKER_HOST} || sleep 3600
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Ddocker.publishRegistry=docker.io -Dspring-boot.build-image.publish=true
                             ''')
                    }
 				/*
