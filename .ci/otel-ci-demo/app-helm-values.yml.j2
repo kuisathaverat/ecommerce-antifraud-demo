@@ -28,3 +28,6 @@ ingress:
         - {{ app_host }}
       secretName: otel-ci-app-tls
 
+extraEnvs:
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: "http://otel-collector-contrib:4317"
