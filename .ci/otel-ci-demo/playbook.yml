@@ -25,15 +25,6 @@
       extra_args: ""
       namespace: "default"
   tasks:
-    - debug:
-        msg: |
-          VAULT_ADDR: {{ lookup('env', 'VAULT_ADDR') }}
-          VAULT_ROLE_ID: {{ lookup('env', 'VAULT_ROLE_ID') }} 
-          VAULT_SECRET_ID: {{ lookup('env', 'VAULT_SECRET_ID') }} 
-          VAULT_TOKEN: {{ lookup('env', 'VAULT_TOKEN') }} 
-          VAULT_AUTH_METHOD: {{ lookup('env', 'VAULT_AUTH_METHOD') }}
-          VAULT_AUTH_TYPE: {{ lookup('env', 'VAULT_AUTH_TYPE') }}
-          
     - name: Create a build folder
       file:
         path: "{{ gcp_dir }}"
