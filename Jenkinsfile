@@ -44,8 +44,8 @@ pipeline {
         stage('Deploy') {
             environment {
                 HOME = "${env.WORKSPACE}"
-                VAULT_AUTH_METHOD = "approle"
-		        VAULT_AUTHTYPE = "approle"
+                VAULT_AUTH_METHOD = "token"
+		        VAULT_AUTHTYPE = "token"
             }
             steps {
                 container(name: 'ansible'){
