@@ -17,7 +17,7 @@
     gcloud_version: "367.0.0"
     helm_version: 3.9.4
     helm_chart:
-      name: "otel-ci-app-green-deploy"
+      name: "otel-ci-app"
       chart: "{{ playbook_dir }}//basic_chart"
       version: 0.1.0
       values_file: "{{ playbook_dir }}/app-helm-values.yml"
