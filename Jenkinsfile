@@ -18,24 +18,20 @@ pipeline {
                 PUBLISH_DOCKER = 'true'
             }
             steps {
-                withCredentials([
-                    string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
-                    usernamePassword(credentialsId: 'docker.io',
-                        passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
-                        usernameVariable: 'CONTAINER_REGISTRY_USERNAME')
-                    ]) {
-                        sh (label: 'mvn deploy spring-boot:build-image',
-                            script: '''
-                                export OTEL_TRACES_EXPORTER="otlp" 
-                                ./mvnw -V -B deploy -Dmaven.deploy.skip
-                            ''')
-                   }
-				/*
-                withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                    sh(label: 'security issue', script: 'echo "${GITHUB_TOKEN}" > file.txt')
+                container(name: 'maven-cache'){
+                    withCredentials([
+                        string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
+                        usernamePassword(credentialsId: 'docker.io',
+                            passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
+                            usernameVariable: 'CONTAINER_REGISTRY_USERNAME')
+                        ]) {
+                            sh (label: 'mvn deploy spring-boot:build-image',
+                                script: '''
+                                    export OTEL_TRACES_EXPORTER="otlp" 
+                                    ./mvnw -V -B deploy -Dmaven.deploy.skip
+                                ''')
+                    }
                 }
-                sh(label: 'read password', script: 'cat file.txt')
-				*/
             }
             post {
                 failure {
@@ -45,11 +41,9 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                build(job: 'antifraud/deploy-antifraud',
-                          parameters: [
-                            string(name: 'PREVIOUS_VERSION', value: previousVersion()),
-                            string(name: 'VERSION', value: newVersion())
-                      ])
+                container(name: 'ansible'){
+                    sh(label: 'Deploy App', script: 'make -C .ci/otel-ci-demo deploy')
+                }
             }
         }
     }
