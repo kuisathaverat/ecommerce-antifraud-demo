@@ -6,5 +6,5 @@ RUN chown -R jenkins:jenkins /home/jenkins
 USER jenkins
 RUN git clone https://github.com/kuisathaverat/ecommerce-antifraud-demo.git
 RUN cd ecommerce-antifraud-demo \
-    && mvn -Dsnyk.skip=true clean compile
+    && mvn dependency:go-offline
 RUN rm -fr /home/jenkins/ecommerce-antifraud-demo
