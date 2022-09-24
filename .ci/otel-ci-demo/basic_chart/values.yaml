@@ -80,3 +80,7 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+extraEnvs: []
+  # - name: FOO
+  #   value: "bar"
