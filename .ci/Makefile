@@ -63,13 +63,26 @@ deploy:
 deploy-docker:
 	$(MAKE) -C otel-ci-demo deploy-docker
 
-.PHONY: deploy
+.PHONY: build-tools
 ## @help:build-tools:Build a Docker container with the tools needed to perform the deployment.
 build-tools:
 	docker build -t kuisathaverat/tools tools
 
+.PHONY: build-maven
+## @help:build-maven:Build a Docker container with the maven and all the dependencies needed to build the app.
 build-maven:
 	docker build -t kuisathaverat/maven maven
+
+.PHONY: push-maven
+## @help:push-maven:Push the maven Docker image to docker.io.
+push-maven:
+	docker push kuisathaverat/maven
+
+.PHONY: push-tools
+## @help:push-tools:Push the tools Docker image to docker.io.
+push-tools:
+	docker push kuisathaverat/tools
+
 
 clean:
 	rm -fr $(VENV) $(CURDIR)/build

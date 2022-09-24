@@ -1,8 +1,10 @@
 FROM maven:3.8.6-jdk-11
 
-WORKDIR /app
+WORKDIR /home/jenkins
+RUN useradd -m -d /home/jenkins -s /bin/bash jenkins
+RUN chown -R jenkins:jenkins /home/jenkins
+USER jenkins
 RUN git clone https://github.com/kuisathaverat/ecommerce-antifraud-demo.git
 RUN cd ecommerce-antifraud-demo \
-    && PUBLISH_DOCKER=false mvn -Dsnyk.skip=true clean compile
-WORKDIR /root
-RUN rm -fr /app
+    && mvn -Dsnyk.skip=true clean compile
+RUN rm -fr /home/jenkins/ecommerce-antifraud-demo
