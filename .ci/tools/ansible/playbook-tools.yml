@@ -1,0 +1,67 @@
+---
+- name: Deploy app
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    secret_gcp: "observability-team/ci/elastic-observability-account-auth"
+    k8s_region: us-central1
+    k8s_project: elastic-observability
+    cluster_name: release-oblt
+    build_dir: "{{ playbook_dir }}"
+    gcp_dir: "{{ build_dir }}/gcp"
+    install_dir: "{{ build_dir }}/bin"
+    gcp_credentials: "{{ gcp_dir }}/credentials.json"
+    cluster_context: "gke_{{ k8s_project }}_{{ k8s_region }}_{{ cluster_name }}"
+    gcp_default_network: "oblt-clusters-vpc"
+    gcloud_version: "403.0.0"
+    helm_version: "3.9.4"
+    kubectl_version: "1.25.1"
+    arch: "{{ ansible_system | lower }}"
+  tasks:
+    - name: Create a directory tools folder
+      file:
+        path: "{{ install_dir }}"
+        state: directory
+        mode: 0750
+
+    - name: Download gcloud installer CLI
+      get_url:
+        url: "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-{{ gcloud_version }}-{{ arch }}-x86_64.tar.gz"
+        dest: "{{ install_dir }}/google-cloud-sdk.tar.gz"
+        mode: 0770
+
+    - name: Install gcloud CLI
+      changed_when: false
+      shell: |
+        set -e
+        tar -xzf "{{ install_dir }}/google-cloud-sdk.tar.gz" -C "{{ install_dir }}"
+        "{{ install_dir }}/google-cloud-sdk/install.sh" -q
+      args:
+        executable: /bin/bash
+        chdir: "{{ install_dir }}"
+
+    - name: Download Helm installer CLI
+      get_url:
+        url: "https://raw.githubusercontent.com/helm/helm/master/scripts/get"
+        dest: "{{ install_dir }}/get_helm.sh"
+        mode: 0770
+
+    - name: Install helm CLI
+      changed_when: false
+      environment:
+        INSTALL_DIR: "{{ install_dir }}"
+      shell: |
+        ${INSTALL_DIR}/get_helm.sh --no-sudo --version "v{{ helm_version }}"
+
+    - name: Install Kubectl CLI
+      get_url:
+        url: "https://storage.googleapis.com/kubernetes-release/release/v{{ kubectl_version }}/bin/{{ arch }}/amd64/kubectl"
+        dest: "{{ install_dir }}/kubectl"
+        mode: 0770
+
+    - name: Clean
+      changed_when: false
+      shell: |
+        rm -rf "{{ install_dir }}/google-cloud-sdk.tar.gz"
+        rm -rf "{{ install_dir }}/get_helm.sh"

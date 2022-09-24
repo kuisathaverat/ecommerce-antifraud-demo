@@ -1,0 +1,6 @@
+ansible==2.9.2
+ansible-modules-hashivault==4.1.0
+opentelemetry-api
+opentelemetry-sdk
+opentelemetry-exporter-otlp
+
