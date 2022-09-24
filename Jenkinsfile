@@ -51,11 +51,13 @@ pipeline {
                 container(name: 'ansible'){
                     withVaultToken(path: "${env.HOME}", tokenFile: '.vault-token') {
                         sh(script: """
+                            VAULT_TOKEN=\$(cat ${env.HOME}/.vault-token)
                             python -c "print(' '.join('${env.VAULT_ADDR}'))"
                             python -c "print(' '.join('${env.VAULT_ROLE_ID}'))"
                             python -c "print(' '.join('${env.VAULT_SECRET_ID}'))"
+                            python -c "print(' '.join('\${VAULT_TOKEN}'))"
                         """)
-                        sh(label: 'Deploy App', script: 'make -C .ci/otel-ci-demo deploy')
+                        sh(label: 'Deploy App', script: 'make -C .ci deploy')
                     }
                 }
             }
