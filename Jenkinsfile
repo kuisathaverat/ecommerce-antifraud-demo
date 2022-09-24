@@ -77,20 +77,6 @@ def newVersion() {
 }
 
 def notifyBuild(status) {
-    def blocks =
-    [
-      [
-        "type": "section",
-        "text": [
-          "type": "mrkdwn",
-          "text": "The CI/CD build finished with status `${currentBuild.result}`\n\n<${env.OTEL_ELASTIC_URL}|View traces in OpenTelemetry>"
-        ],
-      "accessory": [
-        "type": "image",
-        "image_url": "https://raw.githubusercontent.com/open-telemetry/opentelemetry.io/main/static/img/logos/opentelemetry-logo-nav.png",
-        "alt_text": "OpenTelemetry"
-      ]
-    ]
-  ]
-  slackSend(channel: "#cicd", blocks: blocks)
+    def message = "The CI/CD build finished with status `${currentBuild.result}`\n\n<${env.OTEL_ELASTIC_URL}|View traces in OpenTelemetry"
+    slackSend(channel: "#cicd", message: message)
 }
