@@ -1,0 +1,83 @@
+---
+- name: Deploy app
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    secret_gcp: "observability-team/ci/elastic-observability-account-auth"
+    k8s_region: us-central1-c
+    k8s_project: elastic-observability
+    cluster_name: release-oblt
+    app_host: "otel-ci-app.104.197.53.234.ip.es.io"
+    build_dir: "{{ playbook_dir }}/build"
+    gcp_dir: "{{ build_dir }}/gcp"
+    gcp_credentials: "{{ gcp_dir }}/credentials.json"
+    cluster_context: "gke_{{ k8s_project }}_{{ k8s_region }}_{{ cluster_name }}"
+    gcp_default_network: "oblt-clusters-vpc"
+    gcloud_version: "367.0.0"
+    helm_version: 3.9.4
+    helm_chart:
+      name: "otel-ci-app-green-deploy"
+      chart: "{{ playbook_dir }}//basic_chart"
+      version: 0.1.0
+      values_file: "{{ playbook_dir }}/app-helm-values.yml"
+      force_update: false
+      extra_args: ""
+      namespace: "default"
+  tasks:
+    - name: Create a build folder
+      file:
+        path: "{{ gcp_dir }}"
+        state: directory
+        mode: 0750
+
+    - name: Get GCP credentials
+      hashivault_read:
+        secret: "{{ secret_gcp }}"
+        key: credentials
+      register: 'gcp_credentials_file'
+
+    - name: Write GCP file
+      copy:
+        content: '{{ gcp_credentials_file.value }}'
+        dest: "{{ gcp_credentials }}"
+        mode: 0600
+
+    - name: Activate GCP credentials
+      changed_when: false
+      command: |
+        gcloud auth activate-service-account \
+          --key-file="{{ gcp_credentials }}" --project "{{ k8s_project }}"
+
+    - name: Get GCP cluster credentials
+      changed_when: false
+      command: |
+        gcloud container clusters get-credentials "{{ cluster_name }}" \
+          --zone "{{ k8s_region }}" --project "{{ k8s_project }}"
+
+    - name: Helm chart config
+      template:
+        src: "{{ helm_chart.values_file }}.j2"
+        dest: "{{ helm_chart.values_file }}"
+        mode: 0600
+
+    - name: Deploy Chart
+      changed_when: false
+      shell: |
+        HELM_CHART="{{ helm_chart.chart }}"
+        HELM_CHART_VER="{{ helm_chart.version }}"
+        HELM_CHART_VALUES="{{ '--values ' + helm_chart.values_file if helm_chart.values_file is defined else '' }}"
+        # https://github.com/helm/helm/issues/7350
+        HELM_FORCE_UPDATE="{{ '--force' if (helm_chart.force_update is defined and helm_chart.force_update) else '' }}"
+        HELM_EXTRA_ARGS="{{ helm_chart.extra_args if helm_chart.extra_args is defined else '' }}"
+        NAME="{{ helm_chart.name }}"
+        NAMESPACE="{{ helm_chart.namespace }}"
+
+        helm dependency build "${HELM_CHART}"
+        helm upgrade ${HELM_FORCE_UPDATE} --install \
+          --namespace "${NAMESPACE}" \
+          --version "${HELM_CHART_VER}" \
+          ${HELM_CHART_VALUES} ${HELM_EXTRA_ARGS} \
+          "${NAME}" "${HELM_CHART}"
+
+

@@ -1,0 +1,8 @@
+replicaCount: 2
+
+image:
+  repository: curlimages/curl
+  pullPolicy: IfNotPresent
+  tag: "7.85.0"
+
+fullnameOverride: "otel-ci-gen"
