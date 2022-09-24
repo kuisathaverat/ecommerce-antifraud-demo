@@ -42,6 +42,9 @@ pipeline {
             }
         }
         stage('Deploy') {
+            environment {
+                HOME = "${env.WORKSPACE}"
+            }
             steps {
                 container(name: 'ansible'){
                     withVaultToken(path: "${env.HOME}", tokenFile: '.vault-token') {
