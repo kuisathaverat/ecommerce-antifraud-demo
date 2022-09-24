@@ -41,8 +41,8 @@ pipeline {
         }
         stage('Deploy') {
             environment {
-                VAULT_AUTH_METHOD = approle
-                VAULT_AUTHTYPE = approle
+                VAULT_AUTH_METHOD = "approle"
+                VAULT_AUTHTYPE = "approle"
             }
             steps {
                 container(name: 'ansible'){
