@@ -18,7 +18,7 @@ pipeline {
                 PUBLISH_DOCKER = 'true'
             }
             steps {
-                container(name: 'maven-cache'){
+                container(name: 'jnlp'){
                     withCredentials([
                         string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
                         usernamePassword(credentialsId: 'docker.io',
@@ -28,7 +28,7 @@ pipeline {
                             sh (label: 'mvn deploy spring-boot:build-image',
                                 script: '''
                                     export OTEL_TRACES_EXPORTER="otlp" 
-                                    mvn -V -B deploy -Dmaven.deploy.skip
+                                    ./mvnw -V -B deploy -Dmaven.deploy.skip
                                 ''')
                     }
                 }
