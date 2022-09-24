@@ -55,6 +55,14 @@ pipeline {
                      }
                 }
             }
+            post {
+                failure {
+                    notifyBuild('danger')
+                }
+                success {
+                    notifyBuild('good')
+                }
+            }
         }
     }
 }
