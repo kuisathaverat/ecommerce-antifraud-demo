@@ -40,9 +40,19 @@ pipeline {
             }
         }
         stage('Deploy') {
+            environment {
+                VAULT_AUTH_METHOD = approle
+                VAULT_AUTHTYPE = approle
+            }
             steps {
                 container(name: 'ansible'){
-                    sh(label: 'Deploy App', script: 'make -C .ci/otel-ci-demo deploy')
+                     withCredentials([
+                        string(credentialsId: 'vault-addr', variable: 'VAULT_ADDR'),
+                        string(credentialsId: 'vault-role-id', variable: 'VAULT_ROLE_ID'),
+                        string(credentialsId: 'vault-secret-id', variable: 'VAULT_SECRET_ID')
+                     ]){
+                        sh(label: 'Deploy App', script: 'make -C .ci/otel-ci-demo deploy')
+                     }
                 }
             }
         }
