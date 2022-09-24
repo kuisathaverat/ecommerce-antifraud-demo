@@ -53,3 +53,7 @@ setenv.sh
 
 
 jenkins-cli.jar
+
+**/.venv
+**/build
+.ci/otel-ci-demo/app-helm-values.yml

@@ -141,9 +141,6 @@
               </executions>
               <configuration>
                 <apiToken>${snyk.token}</apiToken>
-                <args>
-                  <arg>--all-projects</arg>
-                </args>
               </configuration>
             </plugin>
             <plugin>
