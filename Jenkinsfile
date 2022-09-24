@@ -77,6 +77,6 @@ def newVersion() {
 }
 
 def notifyBuild(status) {
-    def message = "The CI/CD build finished with status `${currentBuild.result}`\n\n<${env.OTEL_ELASTIC_URL}|View traces in OpenTelemetry"
+    def message = "The CI/CD build finished with status `${currentBuild.result}`\n\n[View traces in OpenTelemetry](${env.OTEL_ELASTIC_URL})"
     slackSend(channel: "#cicd", message: message)
 }
