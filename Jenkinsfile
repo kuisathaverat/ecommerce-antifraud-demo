@@ -33,7 +33,7 @@ pipeline {
                 container(name: 'jnlp'){
                     withCredentials([
                         string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN')
-                    ]{
+                    ]){
                         sh(label: 'Snyk', script: './mvnw -V -B snyk:test')
                     }
                 }
