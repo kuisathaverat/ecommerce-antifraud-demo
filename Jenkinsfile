@@ -23,10 +23,10 @@ pipeline {
                     ''')
                 }
                 container(name: 'maven-cache'){
-                    sh(script: 'cp -R /home/jenkins/.m2 ${WORKSPACE}'
+                    sh(script: 'cp -R /home/jenkins/.m2 ${WORKSPACE}')
                 }
                  container(name: 'jnlp'){
-                    sh(script: 'cp -R ${WORKSPACE}/.m2 /home/jenkins'
+                    sh(script: 'cp -R ${WORKSPACE}/.m2 /home/jenkins')
                 }
             }
         }
