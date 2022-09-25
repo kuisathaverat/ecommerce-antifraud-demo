@@ -16,6 +16,7 @@ pipeline {
         stage('Build') {
             environment {
                 PUBLISH_DOCKER = 'true'
+                DOCKER_HOST = 'tcp://localhost:2376'
             }
             steps {
                 container(name: 'jnlp'){
