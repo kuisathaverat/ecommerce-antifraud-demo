@@ -22,6 +22,12 @@ pipeline {
                         chmod 777 /var/lib/docker/docker.sock
                     ''')
                 }
+                container(name: 'maven-cache'){
+                    sh(script: 'cp -R /home/jenkins/.m2 ${WORKSPACE}'
+                }
+                 container(name: 'jnlp'){
+                    sh(script: 'cp -R ${WORKSPACE}/.m2 /home/jenkins'
+                }
             }
         }
         stage('Build') {
@@ -32,13 +38,7 @@ pipeline {
             steps {
                 container(name: 'jnlp'){
                     withCredentials([
-                        string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN')
-                    ]){
-                        sh(label: 'Snyk', script: './mvnw -V -B snyk:test')
-                    }
-                }
-                container(name: 'maven-cache'){
-                    withCredentials([
+                        string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
                         usernamePassword(credentialsId: 'docker.io',
                             passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
                             usernameVariable: 'CONTAINER_REGISTRY_USERNAME')
@@ -46,7 +46,7 @@ pipeline {
                         sh (label: 'mvn deploy',
                             script: '''
                                 export OTEL_TRACES_EXPORTER="otlp"
-                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Dsnyk.skip
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip
                             ''')
                         setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
                     }
