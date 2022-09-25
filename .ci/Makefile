@@ -89,7 +89,7 @@ push-tools:
 load-gen: install-ansible
 	source $(VENV)/bin/activate; \
 	ansible --version; \
-	export SMOKE_TEST_URL=otel-ci-app.104.197.53.234.ip.es.io;\
+	export SMOKE_TEST_URL=https://otel-ci-app.104.197.53.234.ip.es.io;\
 	${PYTHON} -m pytest canary-tests/test_smoke.py::test_healthcheck
 
 clean:
