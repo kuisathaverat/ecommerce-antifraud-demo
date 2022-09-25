@@ -31,11 +31,14 @@ pipeline {
             }
             steps {
                 container(name: 'jnlp'){
-                    sh(label: 'Snyk', script: './mvnw -V -B snyk:test')
+                    withCredentials([
+                        string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN')
+                    ]{
+                        sh(label: 'Snyk', script: './mvnw -V -B snyk:test')
+                    }
                 }
                 container(name: 'maven-cache'){
                     withCredentials([
-                        string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
                         usernamePassword(credentialsId: 'docker.io',
                             passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
                             usernameVariable: 'CONTAINER_REGISTRY_USERNAME')
