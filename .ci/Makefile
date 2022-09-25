@@ -87,7 +87,7 @@ push-tools:
 .PHONY: load-gen
 load-gen:
 	export SMOKE_TEST_URL=otel-ci-app.104.197.53.234.ip.es.io;\
-	pytest canary-tests/test_smoke.py::test_healthcheck
+	${PYTHON} -m pytest canary-tests/test_smoke.py::test_healthcheck
 
 clean:
 	rm -fr $(VENV) $(CURDIR)/build
