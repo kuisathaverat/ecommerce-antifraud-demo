@@ -53,6 +53,12 @@ install-ansible:
 	$(PYTHON) -m pip install -U pip;\
 	$(PIP) install --quiet -r requirements.txt;
 
+.PHONY: install-callback
+## @help:install-callback:Install the Ansible Opentelemetry callback plugin.
+install-callback:
+	mkdir -p callback
+	curl -sS -o callback_plugins/opentelemetry.py https://raw.githubusercontent.com/ansible-collections/community.general/496bf27b5c896c2b8f055e04692e1c5db2288584/plugins/callback/opentelemetry.py
+
 .PHONY: deploy
 ## @help:deploy:Deploy the demo in the k8s cluster.
 deploy: install-ansible
@@ -74,6 +80,7 @@ deploy-docker:
 		-e VAULT_AUTHTYPE \
 		-e OTEL_EXPORTER_OTLP_INSECURE \
 		-e OTEL_EXPORTER_OTLP_ENDPOINT \
+		-e APP_VERSION \
 		kuisathaverat/tools ansible-playbook $(ANSIBLE_OPTS) playbook.yml
 
 clean:
