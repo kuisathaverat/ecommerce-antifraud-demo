@@ -4,6 +4,10 @@ pipeline {
         disableConcurrentBuilds()
         quietPeriod(1)
     }
+    environment{
+        PATH = "${env.PATH}:${env.WORKSPACE}"
+        HOME = "${env.WORKSPACE}"
+    }
     stages {
         stage('Checkout') {
             steps {
@@ -11,15 +15,25 @@ pipeline {
                 script {
                     env.VERSION = newVersion()
                 }
+                container(name: 'dind'){
+                    sh(script: '''
+                        cp $(which docker) ${WORKSPACE}
+                        chmod 755 /var/lib/docker
+                        chmod 777 /var/lib/docker/docker.sock
+                    ''')
+                }
             }
         }
         stage('Build') {
             environment {
                 PUBLISH_DOCKER = 'true'
-                DOCKER_HOST = 'tcp://localhost:2376'
+                DOCKER_HOST = '/var/lib/docker/docker.sock'
             }
             steps {
                 container(name: 'jnlp'){
+                    sh(label: 'Snyk', script: './mvnw -V -B snyk:test')
+                }
+                container(name: 'maven-cache'){
                     withCredentials([
                         string(credentialsId: 'snyk.io', variable: 'SNYK_TOKEN'),
                         usernamePassword(credentialsId: 'docker.io',
@@ -28,9 +42,8 @@ pipeline {
                     ]) {
                         sh (label: 'mvn deploy',
                             script: '''
-                                sleep 3600
                                 export OTEL_TRACES_EXPORTER="otlp"
-                                ./mvnw -V -B deploy -Dmaven.deploy.skip
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip -Dsnyk.skip
                             ''')
                         setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
                     }
@@ -44,7 +57,6 @@ pipeline {
         }
         stage('Deploy') {
             environment {
-                HOME = "${env.WORKSPACE}"
                 VAULT_AUTH_METHOD = "token"
                 VAULT_AUTHTYPE = "token"
             }
