@@ -85,7 +85,8 @@ push-tools:
 
 
 .PHONY: load-gen
-install-ansible
+## @help:load-gen:Makes a request to the app.
+load-gen: install-ansible
 	source $(VENV)/bin/activate; \
 	ansible --version; \
 	export SMOKE_TEST_URL=otel-ci-app.104.197.53.234.ip.es.io;\
