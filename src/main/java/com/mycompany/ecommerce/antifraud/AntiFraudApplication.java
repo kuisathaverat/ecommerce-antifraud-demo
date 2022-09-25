@@ -46,7 +46,7 @@ public class AntiFraudApplication {
 		SpringApplication.run(AntiFraudApplication.class, args);
 	}
 
-	@GetMapping("/ecommerce")
+	@GetMapping("/")
 	public String ecommerce(@RequestParam(value = "name", defaultValue = "World") String name) {
 		//String prefix = "Bye";
 		String prefix = "Hello";

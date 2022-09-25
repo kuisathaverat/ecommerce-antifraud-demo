@@ -7,6 +7,10 @@ image:
 
 fullnameOverride: "{{ app_name }}"
 
+service:
+  type: ClusterIP
+  port: 8080
+
 ingress:
   enabled: {{ app_deploy_ingress }}
   annotations:

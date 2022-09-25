@@ -96,11 +96,13 @@
                             <!-- https://paketo.io/docs/howto/configuration/ -->
                             <BPE_JAVA_TOOL_OPTIONS> -javaagent:/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.10.0.jar</BPE_JAVA_TOOL_OPTIONS>
                             <BPE_OTEL_TRACES_EXPORTER>otlp</BPE_OTEL_TRACES_EXPORTER>
-                            <BPE_OTEL_EXPORTER_OTLP_ENDPOINT>http://otel-collector:4317</BPE_OTEL_EXPORTER_OTLP_ENDPOINT>
                             <BPE_OPEN_TELEMETRY_AGENT_JAR>/workspace/BOOT-INF/lib/opentelemetry-javaagent-1.10.0.jar</BPE_OPEN_TELEMETRY_AGENT_JAR>
-                            <BPE_OTEL_RESOURCE_ATTRIBUTES>service.name=antifraud,service.namespace=com-ecommerce,service.version=${project.version},deployment.environment=production</BPE_OTEL_RESOURCE_ATTRIBUTES>
                             <BPE_OTEL_METRICS_EXPORTER>otlp</BPE_OTEL_METRICS_EXPORTER>
                             <BPE_OTEL_LOGS_EXPORTER>otlp</BPE_OTEL_LOGS_EXPORTER>
+                            <!-- TODO Env vars defined here cannot be replaced in runtime, check why
+                            <BPE_OTEL_EXPORTER_OTLP_ENDPOINT>http://otel-collector:4317</BPE_OTEL_EXPORTER_OTLP_ENDPOINT>
+                            <BPE_OTEL_RESOURCE_ATTRIBUTES>service.name=antifraud,service.namespace=com-ecommerce,service.version=${project.version},deployment.environment=production</BPE_OTEL_RESOURCE_ATTRIBUTES>
+                            -->
                         </env>
                     </image>
                     <publish>${env.PUBLISH_DOCKER}</publish>
