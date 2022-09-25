@@ -51,7 +51,7 @@ install-ansible:
 	test -d $(VENV) || $(PYTHON) -m venv $(VENV);\
 	source $(VENV)/bin/activate;\
 	$(PYTHON) -m pip install -U pip;\
-	$(PIP) install --quiet -r requirements.txt;
+	$(PIP) install --quiet -r $(CURDIR)/tools/ansible/requirements.txt;
 
 .PHONY: deploy
 ## @help:deploy:Deploy the demo in the k8s cluster.
