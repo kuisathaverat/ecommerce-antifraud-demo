@@ -107,6 +107,7 @@
                     </image>
                     <publish>${env.PUBLISH_DOCKER}</publish>
                     <docker>
+                        <host>${env.DOCKER_HOST}</host>
                         <publishRegistry>
                             <username>${env.CONTAINER_REGISTRY_USERNAME}</username>
                             <password>${env.CONTAINER_REGISTRY_PASSWORD}</password>
