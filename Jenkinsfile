@@ -48,7 +48,7 @@ pipeline {
                                 export OTEL_TRACES_EXPORTER="otlp"
                                 ./mvnw -V -B deploy -Dmaven.deploy.skip
                             ''')
-                        setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
+                        setEnvVar('APP_VERSION', sh('./mvnw help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
                     }
                 }
             }
