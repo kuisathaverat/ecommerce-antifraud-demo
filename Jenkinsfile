@@ -5,7 +5,7 @@ pipeline {
         quietPeriod(1)
     }
     environment{
-        PATH = "${env.PATH}:${env.WORKSPACE}"
+        PATH = "${env.PATH}:${env.WORKSPACE}:/tools:/tools/bin:/tools/bin/google-cloud-sdk/bin"
         HOME = "${env.WORKSPACE}"
     }
     stages {
