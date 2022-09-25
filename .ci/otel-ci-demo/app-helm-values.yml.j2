@@ -1,14 +1,14 @@
-replicaCount: 2
+replicaCount: {{ app_replicas }}
 
 image:
   repository: docker.io/kuisathaverat/anti-fraud
   pullPolicy: IfNotPresent
-  tag: "0.0.1"
+  tag: "{{ project_version }}"
 
-fullnameOverride: "otel-ci-app"
+fullnameOverride: "{{ app_name }}"
 
 ingress:
-  enabled: true
+  enabled: {{ app_deploy_ingress }}
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/proxy-body-size: 25m
@@ -31,6 +31,8 @@ ingress:
 extraEnvs:
   - name: OTEL_EXPORTER_OTLP_ENDPOINT
     value: "http://otel-collector-contrib:4317"
+  - name: OTEL_RESOURCE_ATTRIBUTES
+    value: service.name=antifraud,service.namespace=com-ecommerce,service.version={{ project_version }},deployment.environment=production
 
 resources: {}
   limits:

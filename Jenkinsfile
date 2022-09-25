@@ -32,6 +32,7 @@ pipeline {
                                     ./mvnw -V -B deploy -Dmaven.deploy.skip
                                 ''')
                             */
+                            setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
                     }
                 }
             }
@@ -45,7 +46,7 @@ pipeline {
             environment {
                 HOME = "${env.WORKSPACE}"
                 VAULT_AUTH_METHOD = "token"
-		        VAULT_AUTHTYPE = "token"
+                VAULT_AUTHTYPE = "token"
             }
             steps {
                 container(name: 'ansible'){

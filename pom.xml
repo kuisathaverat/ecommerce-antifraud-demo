@@ -10,9 +10,6 @@
     </parent>
     <groupId>com.mycompany.ecommerce</groupId>
     <artifactId>anti-fraud</artifactId>
-    <!-- TODO: version 0.0.2
-    <version>0.0.2</version>
-    -->
     <version>0.0.1</version>
     <name>anti-fraud</name>
     <description>Ecommerce Anti Fraud</description>

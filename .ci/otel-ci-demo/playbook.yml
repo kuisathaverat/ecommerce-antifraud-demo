@@ -9,15 +9,19 @@
     k8s_project: elastic-observability
     cluster_name: release-oblt
     app_host: "otel-ci-app.104.197.53.234.ip.es.io"
+    app_replicas: 2
+    app_deploy_ingress: true
+    app_name: otel-ci-app
+    app_version: "{{ lookup('env','APP_VERSION') | default('0.0.1', true) }}"
     build_dir: "{{ playbook_dir }}/build"
     gcp_dir: "{{ build_dir }}/gcp"
     gcp_credentials: "{{ gcp_dir }}/credentials.json"
     cluster_context: "gke_{{ k8s_project }}_{{ k8s_region }}_{{ cluster_name }}"
     gcp_default_network: "oblt-clusters-vpc"
     gcloud_version: "367.0.0"
-    helm_version: 3.9.4
+    helm_version: "3.9.4"
     helm_chart:
-      name: "otel-ci-app"
+      name: "{{ app_name }}"
       chart: "{{ playbook_dir }}//basic_chart"
       version: 0.1.0
       values_file: "{{ playbook_dir }}/app-helm-values.yml"
