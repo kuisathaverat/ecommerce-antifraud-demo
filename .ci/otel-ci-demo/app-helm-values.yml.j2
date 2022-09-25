@@ -34,7 +34,7 @@ extraEnvs:
   - name: OTEL_RESOURCE_ATTRIBUTES
     value: service.name=antifraud,service.namespace=com-ecommerce,service.version={{ app_version }},deployment.environment=production
 
-resources: {}
+resources:
   limits:
     cpu: 800m
     memory: 1Gi
