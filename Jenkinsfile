@@ -24,15 +24,13 @@ pipeline {
                         usernamePassword(credentialsId: 'docker.io',
                             passwordVariable: 'CONTAINER_REGISTRY_PASSWORD',
                             usernameVariable: 'CONTAINER_REGISTRY_USERNAME')
-                        ]) {
-                            /* TODO enable again
-                            sh (label: 'mvn deploy spring-boot:build-image',
-                                script: '''
-                                    export OTEL_TRACES_EXPORTER="otlp" 
-                                    ./mvnw -V -B deploy -Dmaven.deploy.skip
-                                ''')
-                            */
-                            setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
+                    ]) {
+                        sh (label: 'mvn deploy spring-boot:build-image',
+                            script: '''
+                                export OTEL_TRACES_EXPORTER="otlp"
+                                ./mvnw -V -B deploy -Dmaven.deploy.skip
+                            ''')
+                        setEnvVar('APP_VERSION', sh('mvn help:evaluate -q -DforceStdout -Dexpression=project.version', returnStdout: true).trim())
                     }
                 }
             }
