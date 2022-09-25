@@ -3,7 +3,7 @@ replicaCount: {{ app_replicas }}
 image:
   repository: docker.io/kuisathaverat/anti-fraud
   pullPolicy: IfNotPresent
-  tag: "{{ project_version }}"
+  tag: "{{ app_version }}"
 
 fullnameOverride: "{{ app_name }}"
 
@@ -32,7 +32,7 @@ extraEnvs:
   - name: OTEL_EXPORTER_OTLP_ENDPOINT
     value: "http://otel-collector-contrib:4317"
   - name: OTEL_RESOURCE_ATTRIBUTES
-    value: service.name=antifraud,service.namespace=com-ecommerce,service.version={{ project_version }},deployment.environment=production
+    value: service.name=antifraud,service.namespace=com-ecommerce,service.version={{ app_version }},deployment.environment=production
 
 resources: {}
   limits:
