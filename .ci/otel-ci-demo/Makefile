@@ -44,9 +44,14 @@ help:
 	@echo ""
 	@grep '^## @help' Makefile|cut -d ":" -f 2-3|( (sort|column -s ":" -t) || (sort|tr ":" "\t") || (tr ":" "\t"))
 
+.PHONY: copy-requirements
+## @help:install-ansible:Copy the requierements.txt file from tools.
+copy-requirements:
+	cp ../tools/ansible/requirements.txt requirements.txt
+
 ## @help:install-ansible:Install ansible and the dependencies needed in a virtual environment.
 .PHONY: install-ansible
-install-ansible:
+install-ansible: copy-requirements
 	$(PYTHON) --version;
 	test -d $(VENV) || $(PYTHON) -m venv $(VENV);\
 	source $(VENV)/bin/activate;\
@@ -66,7 +71,7 @@ deploy: install-ansible
 	ansible --version;\
 	ansible-playbook playbook.yml
 
-deploy-docker:
+deploy-docker: copy-requirements
 	docker run \
 		-it \
 		-v $(CURDIR):/app \

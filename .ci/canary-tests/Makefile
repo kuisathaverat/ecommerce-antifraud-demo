@@ -43,9 +43,14 @@ help:
 	@echo ""
 	@grep '^## @help' Makefile|cut -d ":" -f 2-3|( (sort|column -s ":" -t) || (sort|tr ":" "\t") || (tr ":" "\t"))
 
+.PHONY: copy-requirements
+## @help:install-ansible:Copy the requierements.txt file from tools.
+copy-requirements:
+	cp ../tools/ansible/requirements.txt requirements.txt
+
 ## @help:virtualenv:Create a Python virtual environment.
 .PHONY: virtualenv
-virtualenv:
+virtualenv: copy-requirements
 	$(PYTHON) --version
 	test -d $(VENV) || virtualenv -q --python=$(PYTHON) $(VENV);\
 	source $(VENV)/bin/activate;\
