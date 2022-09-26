@@ -11,7 +11,6 @@ pipeline {
         stage('Load gen') {
             environment {
                 OTEL_SERVICE_NAME = "load-generator"
-                OTEL_EXPORTER_OTLP_ENDPOINT = "http://otel-collector-contrib.default.svc.cluster.local:4318"
             }
             steps {
                 container(name: 'ansible'){
