@@ -58,3 +58,5 @@ jenkins-cli.jar
 **/build
 .ci/otel-ci-demo/app-helm-values.yml
 **/__pycache__
+.ci/otel-ci-demo/requirements.txt
+.ci/canary-tests/requirements.txt
