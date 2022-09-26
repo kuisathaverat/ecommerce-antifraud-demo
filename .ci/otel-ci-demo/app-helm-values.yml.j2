@@ -2,7 +2,7 @@ replicaCount: {{ app_replicas }}
 
 image:
   repository: docker.io/kuisathaverat/anti-fraud
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   tag: "{{ app_version }}"
 
 fullnameOverride: "{{ app_name }}"
