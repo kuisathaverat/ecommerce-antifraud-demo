@@ -15,7 +15,7 @@ pipeline {
             steps {
                 container(name: 'ansible'){
                     echo "${OTEL_EXPORTER_OTLP_ENDPOINT}"
-                    sh(label: '', script: 'make -C .ci load-gen')
+                    sh(label: '', script: 'make -C .ci test_healthcheck')
                 }
             }
         }

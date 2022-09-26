@@ -84,9 +84,9 @@ push-tools:
 	docker push kuisathaverat/tools
 
 
-.PHONY: load-gen
-## @help:load-gen:Makes a request to the app.
-load-gen: install-ansible
+.PHONY: test_healthcheck
+## @help:test_healthcheck:Makes a request to the app.
+test_healthcheck: install-ansible
 	source $(VENV)/bin/activate; \
 	ansible --version; \
 	export SMOKE_TEST_URL=https://otel-ci-app.104.197.53.234.ip.es.io;\
